@@ -252,9 +252,39 @@ Charts are generated from backend aggregation endpoints, ensuring data consisten
 
 
 
-## Deployment notes (Render or similar)
+## Deployment (Railway)
 
-- Create two services: a Python web service for the FastAPI backend and a static site for the Vite-built frontend.
-- Ensure the backend exposes port 8000 and serves the FastAPI app. Set environment variables from `.env` (do not enable `DEV_CORS` in production).
-- Configure the frontend to point to the backend by setting `VITE_API_URL` to your backend URL (e.g., `https://your-backend.onrender.com`).
-- Add a persistent disk or volume for SQLite database and uploads if you need to preserve data across deploys. Mount it and set `DATABASE_URL` and `UPLOAD_DIR` accordingly.
+This repo contains two services: `backend/` (FastAPI) and `frontend/` (React/Vite).
+
+### Backend service
+- Service root: `backend/`
+- Start: handled via `Procfile` (`web: sh ./start.sh`)
+- Environment:
+   - `JWT_SECRET_KEY`: set a secure value
+   - `DATABASE_URL`: optional (defaults to SQLite in repo root)
+   - `CORS_EXTRA_ORIGINS`: include your frontend domain, e.g. `https://<frontend>.railway.app`
+   - Optional admin bootstrap: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_USERNAME`, `ADMIN_OVERWRITE=false`
+
+### Frontend service
+- Service root: `frontend/`
+- Build: uses `frontend/Dockerfile` to build and serve via Nginx
+- Build Args:
+   - `VITE_API_URL=https://<backend>.railway.app`
+- Runtime: Nginx binds to `$PORT` automatically (rewritten in `nginx.conf` at container start)
+
+### Verify
+- Backend health: `GET https://<backend>.railway.app/api/v1/health`
+- Frontend: `https://<frontend>.railway.app` (Login/Signup should succeed)
+
+### Local Docker quick start
+Backend:
+```powershell
+docker build -t dataviz-backend:local .
+docker run -p 8000:8000 dataviz-backend:local
+```
+
+Frontend:
+```powershell
+docker build -t dataviz-frontend:local -f frontend/Dockerfile --build-arg VITE_API_URL=http://localhost:8000 ./frontend
+docker run -p 8080:80 dataviz-frontend:local
+```

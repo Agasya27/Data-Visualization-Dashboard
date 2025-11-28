@@ -18,5 +18,7 @@ WORKDIR /usr/share/nginx/html
 COPY --from=build /app/dist .
 # Basic SPA fallback and gzip
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+# Ensure Nginx listens on $PORT provided by Railway
+ENV PORT=80
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "sed -i \"s/__PORT__/${PORT:-80}/\" /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;' "]
