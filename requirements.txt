@@ -1,0 +1,2 @@
+# Delegate to backend requirements for platform build detection
+-r backend/requirements.txt
