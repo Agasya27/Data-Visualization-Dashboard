@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -eu
 
 echo "[start.sh] Python version: $(python --version 2>&1)"
 
@@ -13,10 +13,10 @@ else
   echo "[start.sh] No requirements.txt found; continuing"
 fi
 
-PORT="${PORT:-8000}"
-if ! echo "$PORT" | grep -Eq '^[0-9]+$'; then
-  echo "[start.sh] Invalid PORT '$PORT' provided; falling back to 8000"
-  PORT=8000
+PORT_VAL="${PORT:-8000}"
+if ! echo "$PORT_VAL" | grep -Eq '^[0-9]+$'; then
+  echo "[start.sh] Invalid PORT '$PORT_VAL' provided; falling back to 8000"
+  PORT_VAL=8000
 fi
-echo "[start.sh] Starting Uvicorn on port ${PORT}"
-exec uvicorn backend.app.main:app --host 0.0.0.0 --port "${PORT}"
+echo "[start.sh] Starting Uvicorn on port ${PORT_VAL}"
+exec python -m uvicorn backend.app.main:app --host 0.0.0.0 --port "${PORT_VAL}"
