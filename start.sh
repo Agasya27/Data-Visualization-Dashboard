@@ -13,6 +13,10 @@ else
   echo "[start.sh] No requirements.txt found; continuing"
 fi
 
-export PORT="${PORT:-8000}"
+PORT="${PORT:-8000}"
+if ! echo "$PORT" | grep -Eq '^[0-9]+$'; then
+  echo "[start.sh] Invalid PORT '$PORT' provided; falling back to 8000"
+  PORT=8000
+fi
 echo "[start.sh] Starting Uvicorn on port ${PORT}"
 exec uvicorn backend.app.main:app --host 0.0.0.0 --port "${PORT}"
