@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dvizdash-api:latest
+    environment:
+      - PORT=8000
+      - DEV_CORS=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
