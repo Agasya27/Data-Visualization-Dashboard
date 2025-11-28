@@ -48,6 +48,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Debug: log effective CORS config at startup
+try:
+    print("[startup] CORS allow_origins:", allow_origins)
+    print("[startup] CORS allow_credentials:", allow_credentials)
+except Exception:
+    pass
+
 app.include_router(api_router, prefix="/api/v1")
 
 
