@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Leverage root requirements that delegates to backend/requirements.txt
+# Copy both files so pip can resolve the included path during install
 COPY requirements.txt ./
+COPY backend/requirements.txt backend/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application source
