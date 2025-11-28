@@ -14,6 +14,7 @@ class Settings(BaseSettings):
         env_file=(".env", "backend/.env"),
         env_file_encoding="utf-8",
         case_sensitive=True,
+        extra="ignore",  # Ignore unknown env vars (e.g., deprecated AI_* vars)
     )
 
     # Use a stable absolute path for SQLite by default so CLI tools and server share the same DB regardless of CWD
